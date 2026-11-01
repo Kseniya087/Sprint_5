@@ -18,7 +18,7 @@ class TestProfile:
         email_input = wait.until(
             EC.visibility_of_element_located(RegistrationLocators.EMAIL_INPUT))
         email_input.clear()
-        email_input.send_keys("kkoltsova54123@yandex.ru") 
+        email_input.send_keys("kkoltsova54087@yandex.ru") 
 
         password_input = driver.find_element(*RegistrationLocators.PASSWORD_INPUT)
         password_input.clear()
