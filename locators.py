@@ -29,7 +29,6 @@ class RegistrationLocators:
     ASSEMBLE_BURGER = (By.XPATH, "//h1[contains(text(), 'Соберите бургер')]") # Собери бургер
 
 class ConstructorLocators:
-    TAB_BUNS = (By.XPATH, '//h2[contains(@class, "text_type_main-medium") and text()="Булки"]')
-    TAB_SAUCES = (By.XPATH, '//h2[contains(@class, "text_type_main-medium") and text()="Соусы"]')
-    TAB_FILLINGS = (By.XPATH, '//h2[contains(@class, "text_type_main-medium") and text()="Начинки"]')
-    
+    TAB_BUNS = (By.XPATH, '//div[contains(@class, "tab_tab")]//span[text()="Булки"]/..')
+    TAB_SAUCES = (By.XPATH, '//div[contains(@class, "tab_tab")]//span[text()="Соусы"]/..')
+    TAB_FILLINGS = (By.XPATH, '//div[contains(@class, "tab_tab")]//span[text()="Начинки"]/..')

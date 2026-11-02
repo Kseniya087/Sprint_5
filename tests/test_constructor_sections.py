@@ -1,28 +1,27 @@
 import pytest
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.by import By
 from locators import RegistrationLocators, ConstructorLocators
-from url import Url
 
 class TestConstructorSections:
-    @pytest.mark.parametrize("section_locator,expected_header", [
-        (ConstructorLocators.TAB_BUNS, "Булки"),
+    @pytest.mark.parametrize("tab_locator,expected_text", [
         (ConstructorLocators.TAB_SAUCES, "Соусы"),
-        (ConstructorLocators.TAB_FILLINGS, "Начинки"),])
+        (ConstructorLocators.TAB_FILLINGS, "Начинки"),
+        (ConstructorLocators.TAB_BUNS, "Булки")])
     
-    def test_section_transition(self, logged_in_driver, section_locator, expected_header):
+    def test_section_transition(self, logged_in_driver, tab_locator, expected_text):
         driver = logged_in_driver
         wait = WebDriverWait(driver, 10)
-        
-        # Переход в конструктор
+
         driver.find_element(*RegistrationLocators.BUTTON_CONSTRUCTOR).click()
         wait.until(EC.url_contains("/"))
-        
-        section_btn = wait.until(EC.element_to_be_clickable(section_locator))
-        section_btn.click()
-        
-        ingredients_list = wait.until(
-            EC.presence_of_element_located(("xpath", f"//h2[text()='{expected_header}']/following-sibling::ul")))
-        assert ingredients_list.is_displayed()
+
+        if expected_text == "Булки":
+            sauce_tab = wait.until(EC.element_to_be_clickable(ConstructorLocators.TAB_SAUCES))
+            sauce_tab.click()
+            wait.until(lambda d: "current" in sauce_tab.get_attribute("class"))
+    
+        target_tab = wait.until(EC.element_to_be_clickable(tab_locator))
+        target_tab.click()
+        wait.until(lambda d: "current" in target_tab.get_attribute("class"))
 

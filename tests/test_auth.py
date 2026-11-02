@@ -17,6 +17,9 @@ class TestLoginAuthentication:
         assert wait.until(
             EC.visibility_of_element_located(RegistrationLocators.LOGIN_HEADER)
         ).is_displayed(), "После регистрации не открылась страница входа"
+
+        TestAuth._enter_credentials(driver)
+        assert wait.until(EC.visibility_of_element_located(RegistrationLocators.BUTTON_ORDER))
         
 
     def test_login_via_header_profile(self, on_main_page):
@@ -32,6 +35,9 @@ class TestLoginAuthentication:
             EC.visibility_of_element_located(RegistrationLocators.LOGIN_HEADER)
         ).is_displayed(), "После регистрации не открылась страница входа"
 
+        TestAuth._enter_credentials(driver)
+        assert wait.until(EC.visibility_of_element_located(RegistrationLocators.BUTTON_ORDER))
+
 
     def test_login_from_registration_form(self, on_register_page):
         driver = on_register_page
@@ -45,6 +51,9 @@ class TestLoginAuthentication:
         assert wait.until(
             EC.visibility_of_element_located(RegistrationLocators.LOGIN_HEADER)
         ).is_displayed(), "После регистрации не открылась страница входа"
+
+        TestAuth._enter_credentials(driver)
+        assert wait.until(EC.visibility_of_element_located(RegistrationLocators.BUTTON_ORDER))
 
 
     def test_login_from_recovery_form(self, on_reset_password):
@@ -60,21 +69,28 @@ class TestLoginAuthentication:
             EC.visibility_of_element_located(RegistrationLocators.LOGIN_HEADER)
         ).is_displayed(), "После регистрации не открылась страница входа"
 
+        TestAuth._enter_credentials(driver)
+        assert wait.until(EC.visibility_of_element_located(RegistrationLocators.BUTTON_ORDER))
+
 
 class TestAuth:
+    @staticmethod
+    def _enter_credentials(driver):
+        driver.find_element(*RegistrationLocators.EMAIL_INPUT).send_keys(AUTH_EMAIL)
+        driver.find_element(*RegistrationLocators.PASSWORD_INPUT).send_keys(AUTH_PASSWORD)
+        driver.find_element(*RegistrationLocators.LOGIN_BUTTON).click()
+
     @staticmethod
     def _login(driver):
         wait = WebDriverWait(driver, 10)
         driver.get(Url.MAIN_URL)
         wait.until(EC.element_to_be_clickable(RegistrationLocators.BUTTON_PERSONAL_ACCOUNT)).click()
         wait.until(EC.url_contains("/login"))
-        driver.find_element(*RegistrationLocators.EMAIL_INPUT).send_keys(AUTH_EMAIL)
-        driver.find_element(*RegistrationLocators.PASSWORD_INPUT).send_keys(AUTH_PASSWORD)
-        driver.find_element(*RegistrationLocators.LOGIN_BUTTON).click()
+        TestAuth._enter_credentials(driver)
         wait.until(EC.visibility_of_element_located(RegistrationLocators.BUTTON_ORDER))
 
-    def test_logout_from_profile(self, driver):
-        self._login(driver)
+    def test_logout_from_profile(self, logged_in_driver):
+        driver = logged_in_driver
         wait = WebDriverWait(driver, 10)
         wait.until(EC.element_to_be_clickable(RegistrationLocators.BUTTON_PERSONAL_ACCOUNT)).click()
         wait.until(EC.url_contains("account/profile"))
